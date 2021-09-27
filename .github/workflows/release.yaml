@@ -1,0 +1,48 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc-[0-9]+'
+
+jobs:
+  release:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Setup env"
+        run: |
+          echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
+
+      - name: "Setup Java"
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
+
+      - name: "Set Version"
+        run: ./mvnw versions:set --batch-mode -DnewVersion=${{ env.VERSION }}
+
+      - name: "Build"
+        run: ./mvnw clean package --batch-mode -DskipTests
+
+      - name: "Move build result"
+        run: mv modules/swagger-codegen-cli/target/swagger-codegen-cli.jar modules/swagger-codegen-cli/target/swagger-codegen-cli-${{ env.VERSION }}.jar
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.VERSION }}
+          name: ${{ env.VERSION }}
+          body: ${{ steps.build_changelog.outputs.changelog }}
+          prerelease: ${{ contains(github.ref, '-rc-') }}
+          files: |
+            modules/swagger-codegen-cli/target/swagger-codegen-cli-${{ env.VERSION }}.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
