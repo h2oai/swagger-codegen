@@ -122,7 +122,7 @@ class ApiClient(object):
             path_params = self.parameters_to_tuples(path_params,
                                                     collection_formats)
             for k, v in path_params:
-                {{=<% %>=}}re_raw = f"{{{k}(=[a-zA-Z0-9]+\\/\\*(\\/versions\\/\\*)?)?}}"<%={{ }}=%>
+                {{=<% %>=}}re_raw = f"{{{k}(=projects\\/\\*(\\/[a-zA-Z0-9]+\\/[a-zA-Z0-9]+\\/\\*(\\/versions\\/\\*)?)?)?}}"<%={{ }}=%>
                 regex = re.compile(re_raw)
                 # specified safe chars, encode everything
                 resource_path = regex.sub(quote(str(v), safe=config.safe_chars_for_path_param), resource_path)
