@@ -100,7 +100,7 @@ export const {{classname}}FetchParamCreator = function (configuration?: Configur
     {{/required}}
     {{/allParams}}
             const localVarPath = `{{{path}}}`{{#pathParams}}{{=<% %>=}}
-                .replace(/{<%baseName%>(=[a-zA-Z0-9]+\/\*(\/versions\/\*)?)?}/, String(<%paramName%>))<%={{ }}=%>{{/pathParams}};
+                .replace(/{<%baseName%>(=projects\\/\\*(\\/[a-zA-Z0-9]+\\/[a-zA-Z0-9]+\\/\\*(\\/versions\\/\\*)?)?)?}/, String(<%paramName%>))<%={{ }}=%>{{/pathParams}};
             const localVarUrlObj = url.parse(localVarPath, true);
             const localVarRequestOptions = Object.assign({ method: '{{httpMethod}}' }, options);
             const localVarHeaderParameter = {} as any;
